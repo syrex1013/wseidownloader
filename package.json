@@ -1,6 +1,6 @@
 {
   "name": "wsei-course-downloader",
-  "version": "2.0.0",
+  "version": "1.0.0",
   "description": "Professional automated course material downloader for WSEI e-learning platform",
   "main": "index.js",
   "bin": {
