@@ -36,7 +36,7 @@ const stats = {
 
 /**
  * Main application function that orchestrates the entire download process
- * @returns {Promise<void>}
+ * @returns {Promise<void>} Promise that resolves when the download process is complete
  */
 async function main() {
   let browser = null;
@@ -229,6 +229,7 @@ async function main() {
 
 /**
  * Graceful shutdown handler
+ * @returns {void}
  */
 function handleShutdown() {
   console.log(chalk.yellow('\n⚠️  Shutting down gracefully...'));

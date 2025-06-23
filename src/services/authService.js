@@ -31,7 +31,9 @@ async function login(page, credentials, loginUrl) {
     try {
       await page.waitForFunction(
         () =>
+          /* eslint-disable-next-line no-undef */
           window.location.hostname === 'wsei.pl' ||
+          /* eslint-disable-next-line no-undef */
           window.location.href.includes('/my/'),
         { timeout: 10000 },
       );

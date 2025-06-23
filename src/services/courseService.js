@@ -35,7 +35,6 @@ async function fetchCourses(page, coursesUrl) {
 
     // Updated logic to find courses within the specific "Moje kursy" structure
     const courses = await page.evaluate(() => {
-      /* global document */
       // First, try the specific nested structure for "Moje kursy"
       let courseElements = document.querySelectorAll(
         'li.type_course a[href*="view.php?id="]',
@@ -75,7 +74,6 @@ async function fetchCourses(page, coursesUrl) {
             seenUrls.add(courseUrl);
           }
         } catch (error) {
-          /* global console */
           console.warn('Skipping malformed course element:', error);
         }
       });
@@ -189,7 +187,6 @@ async function extractResources(page, courseUrl) {
           }
         } catch (error) {
           // Skip malformed resource elements
-          /* global console */
           console.warn('Skipping malformed resource element:', error);
         }
       });

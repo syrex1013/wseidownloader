@@ -139,7 +139,7 @@ async function downloadResourceFile(
       });
       downloadInfo = await Promise.race([
         resourcePage.evaluate(() => {
-          /* global document, FormData, URLSearchParams, window */
+          /* global document, window */
           // Moodle folder download-all button
           const folderDownloadBtn = document.querySelector(
             'button[type="submit"][name="download"]',
@@ -222,7 +222,6 @@ async function downloadResourceFile(
       // Check if the page contains a file or is just an HTML page
       const isFileResource = await Promise.race([
         resourcePage.evaluate(() => {
-          /* global document */
           // Check for file indicators
           const hasDownloadLink = document.querySelector(
             'a[href*="forcedownload"], a.forcedownload, .resourceworkaround a',
@@ -315,8 +314,6 @@ async function downloadResourceFile(
     const cookieString = (await resourcePage.cookies())
       .map((c) => `${c.name}=${c.value}`)
       .join('; ');
-
-    const progressBar = getProgressBar();
 
     // Download with timeout and progress tracking
     logger.debug('Starting axios download', { url: downloadInfo.url });
@@ -541,6 +538,11 @@ async function downloadResourceFile(
 
 /**
  * Downloads course materials for selected courses using a concurrent batching strategy.
+ * @param {Object} page - Puppeteer page object
+ * @param {Array} selectedCourses - Array of course objects to download
+ * @param {string} downloadDir - Directory path to save downloaded files
+ * @param {Object} stats - Statistics object to track download progress
+ * @returns {Promise<void>}
  */
 async function downloadCourseMaterials(
   page,
@@ -590,7 +592,6 @@ async function downloadCourseMaterials(
   updateUI();
 
   const CONCURRENCY = 2;
-  const processedCount = 0;
 
   for (let i = 0; i < resourceQueue.length; i += CONCURRENCY) {
     const chunk = resourceQueue.slice(i, i + CONCURRENCY);

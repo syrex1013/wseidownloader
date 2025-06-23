@@ -19,6 +19,7 @@ class ProgressBarManager {
   /**
    * Starts the progress bar.
    * @param {number} total - The total number of items to process.
+   * @returns {void}
    */
   start(total) {
     if (this.isStarted) return;
@@ -30,6 +31,7 @@ class ProgressBarManager {
 
   /**
    * Stops the progress bar.
+   * @returns {void}
    */
   stop() {
     if (this.isStarted) {
@@ -43,6 +45,7 @@ class ProgressBarManager {
    * @param {number} processedCount - The number of items processed so far.
    * @param {object} stats - The stats object with downloaded, skipped, failed counts.
    * @param {string} statusMessage - The message to display.
+   * @returns {void}
    */
   update(processedCount, stats, statusMessage) {
     if (!this.isStarted) return;
@@ -71,6 +74,7 @@ let progressBarInstance = null;
 
 /**
  * Gets or creates the progress bar manager instance.
+ * @returns {ProgressBarManager} The progress bar manager instance.
  */
 function getProgressBar() {
   if (!progressBarInstance) {

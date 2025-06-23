@@ -1,5 +1,4 @@
 const fs = require('fs');
-const sanitize = require('sanitize-filename');
 
 /**
  * Formats bytes into human-readable format
@@ -59,6 +58,7 @@ function fileExistsAndValid(filepath) {
 /**
  * Ensures a directory exists, creating it if necessary
  * @param {string} dirPath - Directory path to ensure exists
+ * @returns {void}
  */
 function ensureDirectoryExists(dirPath) {
   if (!fs.existsSync(dirPath)) {

@@ -1,5 +1,5 @@
-const fs = require("fs");
-const chalk = require("chalk");
+const fs = require('fs');
+const chalk = require('chalk');
 
 /**
  * Loads configuration from config.json file
@@ -8,13 +8,13 @@ const chalk = require("chalk");
  */
 function loadConfig() {
   try {
-    const configPath = "config.json";
+    const configPath = 'config.json';
 
     if (!fs.existsSync(configPath)) {
-      throw new Error("config.json not found");
+      throw new Error('config.json not found');
     }
 
-    const configData = fs.readFileSync(configPath, "utf8");
+    const configData = fs.readFileSync(configPath, 'utf8');
     const config = JSON.parse(configData);
 
     // Validate required configuration fields
@@ -22,15 +22,15 @@ function loadConfig() {
 
     return config;
   } catch (error) {
-    if (error.message === "config.json not found") {
-      console.error(chalk.red("❌ Error: config.json not found."));
+    if (error.message === 'config.json not found') {
+      console.error(chalk.red('❌ Error: config.json not found.'));
       console.log(
         chalk.yellow(
-          "📝 Please copy config.example.json to config.json and update with your credentials."
-        )
+          '📝 Please copy config.example.json to config.json and update with your credentials.',
+        ),
       );
     } else if (error instanceof SyntaxError) {
-      console.error(chalk.red("❌ Error: Invalid JSON in config.json"));
+      console.error(chalk.red('❌ Error: Invalid JSON in config.json'));
     } else {
       console.error(chalk.red(`❌ Error loading config: ${error.message}`));
     }
@@ -45,39 +45,39 @@ function loadConfig() {
  */
 function validateConfig(config) {
   const requiredFields = [
-    "credentials.username",
-    "urls.loginUrl",
-    "urls.coursesUrl",
-    "downloadDir",
+    'credentials.username',
+    'urls.loginUrl',
+    'urls.coursesUrl',
+    'downloadDir',
   ];
 
   // Check required fields (except password, which has special handling)
   for (const field of requiredFields) {
     const value = getNestedValue(config, field);
-    if (!value || (typeof value === "string" && value.trim() === "")) {
+    if (!value || (typeof value === 'string' && value.trim() === '')) {
       throw new Error(`Missing or empty required field: ${field}`);
     }
   }
 
   // Special handling for password - check if it exists first
-  const password = getNestedValue(config, "credentials.password");
-  if (!password || (typeof password === "string" && password.trim() === "")) {
-    throw new Error("Password cannot be empty");
+  const password = getNestedValue(config, 'credentials.password');
+  if (!password || (typeof password === 'string' && password.trim() === '')) {
+    throw new Error('Password cannot be empty');
   }
 
   // Validate URLs
   if (!isValidUrl(config.urls.loginUrl)) {
-    throw new Error("Invalid login URL format");
+    throw new Error('Invalid login URL format');
   }
 
   if (!isValidUrl(config.urls.coursesUrl)) {
-    throw new Error("Invalid courses URL format");
+    throw new Error('Invalid courses URL format');
   }
 
   // Validate credentials
   if (!isValidUsername(config.credentials.username)) {
     throw new Error(
-      "Invalid username format: must be a non-empty string (username or email)"
+      'Invalid username format: must be a non-empty string (username or email)',
     );
   }
 }
@@ -89,7 +89,7 @@ function validateConfig(config) {
  * @returns {*} Value at the specified path
  */
 function getNestedValue(obj, path) {
-  return path.split(".").reduce((current, key) => {
+  return path.split('.').reduce((current, key) => {
     return current && current[key] !== undefined ? current[key] : undefined;
   }, obj);
 }
@@ -114,7 +114,7 @@ function isValidUrl(url) {
  * @returns {boolean} True if valid
  */
 function isValidUsername(username) {
-  if (typeof username !== "string" || username.trim() === "") return false;
+  if (typeof username !== 'string' || username.trim() === '') return false;
   // Accepts email or any non-empty string (username or numeric ID)
   return true;
 }
@@ -126,25 +126,25 @@ function isValidUsername(username) {
 function getDefaultConfig() {
   return {
     credentials: {
-      username: "your_email@example.com",
-      password: "your_password",
+      username: 'your_email@example.com',
+      password: 'your_password',
     },
     urls: {
-      loginUrl: "https://wsei.pl/login/index.php",
-      coursesUrl: "https://wsei.pl/my/",
+      loginUrl: 'https://wsei.pl/login/index.php',
+      coursesUrl: 'https://wsei.pl/my/',
     },
-    downloadDir: "downloads",
+    downloadDir: 'downloads',
     browserOptions: {
       headless: true,
       args: [
-        "--no-sandbox",
-        "--disable-setuid-sandbox",
-        "--disable-dev-shm-usage",
-        "--disable-accelerated-2d-canvas",
-        "--no-first-run",
-        "--no-zygote",
-        "--single-process",
-        "--disable-gpu",
+        '--no-sandbox',
+        '--disable-setuid-sandbox',
+        '--disable-dev-shm-usage',
+        '--disable-accelerated-2d-canvas',
+        '--no-first-run',
+        '--no-zygote',
+        '--single-process',
+        '--disable-gpu',
       ],
     },
   };
@@ -154,7 +154,7 @@ function getDefaultConfig() {
  * Creates example configuration file
  * @param {string} filepath - Path where to create the example file
  */
-function createExampleConfig(filepath = "config.example.json") {
+function createExampleConfig(filepath = 'config.example.json') {
   const defaultConfig = getDefaultConfig();
   fs.writeFileSync(filepath, JSON.stringify(defaultConfig, null, 2));
   console.log(chalk.green(`✓ Created example config file: ${filepath}`));

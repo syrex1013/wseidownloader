@@ -5,6 +5,7 @@ const chalk = require('chalk');
  * @param {number} current - Current progress value
  * @param {number} total - Total value for progress calculation
  * @param {string} status - Status message to display
+ * @returns {void}
  */
 function updateProgress(current, total, status) {
   const percentage = total > 0 ? Math.round((current / total) * 100) : 0;
@@ -22,6 +23,7 @@ function updateProgress(current, total, status) {
 
 /**
  * Displays the application header
+ * @returns {void}
  */
 function displayHeader() {
   console.clear();
@@ -52,6 +54,7 @@ function displayHeader() {
  * Displays download statistics in a formatted box
  * @param {Object} stats - Statistics object containing download information
  * @param {string} formatBytes - Function to format bytes
+ * @returns {void}
  */
 function displayStats(stats, formatBytes) {
   console.log(
@@ -107,6 +110,7 @@ function displayStats(stats, formatBytes) {
  * Displays final summary statistics
  * @param {Object} stats - Statistics object containing download information
  * @param {string} formatBytes - Function to format bytes
+ * @returns {void}
  */
 function displayFinalSummary(stats, formatBytes) {
   console.log(
