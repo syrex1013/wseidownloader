@@ -542,7 +542,7 @@ async function downloadResourceFile(
  * @param {Array} selectedCourses - Array of course objects to download
  * @param {string} downloadDir - Directory path to save downloaded files
  * @param {Object} stats - Statistics object to track download progress
- * @returns {Promise<void>}
+ * @returns {Promise<void>} Promise that resolves when all downloads are complete
  */
 async function downloadCourseMaterials(
   page,

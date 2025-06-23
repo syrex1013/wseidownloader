@@ -121,6 +121,7 @@ function validateCourseSelection(selectedCourses, availableCourses) {
 /**
  * Displays course selection summary
  * @param {Array} selectedCourses - Array of selected course objects
+ * @returns {void}
  */
 function displayCourseSelectionSummary(selectedCourses) {
   console.log(chalk.cyan('\n📋 Course Selection Summary:'));

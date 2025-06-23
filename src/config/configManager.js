@@ -41,6 +41,7 @@ function loadConfig() {
 /**
  * Validates configuration object structure
  * @param {Object} config - Configuration object to validate
+ * @returns {void}
  * @throws {Error} If configuration is invalid
  */
 function validateConfig(config) {
@@ -153,6 +154,7 @@ function getDefaultConfig() {
 /**
  * Creates example configuration file
  * @param {string} filepath - Path where to create the example file
+ * @returns {void}
  */
 function createExampleConfig(filepath = 'config.example.json') {
   const defaultConfig = getDefaultConfig();
