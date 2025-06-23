@@ -65,7 +65,8 @@
     "ora": "^5.4.1",
     "puppeteer": "^24.10.2",
     "puppeteer-extra": "^3.3.6",
-    "puppeteer-extra-plugin-stealth": "^2.11.2"
+    "puppeteer-extra-plugin-stealth": "^2.11.2",
+    "sanitize-filename": "^1.6.3"
   },
   "devDependencies": {
     "eslint": "^8.57.1"
