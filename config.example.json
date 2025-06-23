@@ -1,0 +1,21 @@
+{
+  "credentials": {
+    "username": "YOUR_USERNAME",
+    "password": "YOUR_PASSWORD"
+  },
+  "urls": {
+    "loginUrl": "https://dl.wsei.pl/login/index.php",
+    "coursesUrl": "https://dl.wsei.pl/my/courses.php"
+  },
+  "downloadDir": "downloads",
+  "browser": {
+    "headless": true,
+    "args": [
+      "--no-sandbox",
+      "--disable-setuid-sandbox",
+      "--disable-blink-features=AutomationControlled",
+      "--disable-web-security",
+      "--disable-features=IsolateOrigins,site-per-process"
+    ]
+  }
+}

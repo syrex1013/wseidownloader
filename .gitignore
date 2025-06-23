@@ -1,0 +1,31 @@
+# Dependencies
+node_modules/
+
+# Configuration with secrets
+config.json
+
+# Generated course files
+courses_*.json
+
+# Environment variables
+.env
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE files
+.vscode/
+.idea/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+
+# Temporary files
+*.tmp
+*.temp 
+
+# Downloaded files
+downloads/
