@@ -11,7 +11,12 @@
     "dev": "node --inspect index.js",
     "lint": "eslint src/ --ext .js",
     "lint:fix": "eslint src/ --ext .js --fix",
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
+    "build:exe": "pkg . --out-path dist/",
+    "build:clean": "rm -rf dist/ && npm run build:exe",
+    "postbuild": "echo '\\n✅ Executables built successfully!\\n⚠️  Note: Users need to install Chrome with: npx puppeteer browsers install chrome'",
     "setup": "node -e \"require('./src/config/configManager').createExampleConfig()\"",
     "clean": "rm -rf downloads logs/*.log",
     "build": "echo \"No build step required for Node.js application\"",
@@ -54,7 +59,7 @@
   ],
   "dependencies": {
     "@sentry/node": "^9.30.0",
-    "axios": "^1.10.0",
+    "axios": "^0.27.2",
     "blessed": "^0.1.81",
     "blessed-contrib": "^4.11.0",
     "chalk": "^4.1.2",
@@ -69,15 +74,54 @@
     "sanitize-filename": "^1.6.3"
   },
   "devDependencies": {
-    "eslint": "^8.57.1"
+    "eslint": "^8.57.1",
+    "jest": "^29.7.0",
+    "@babel/core": "^7.25.7",
+    "@babel/preset-env": "^7.25.7",
+    "babel-jest": "^29.7.0",
+    "jest-environment-node": "^29.7.0",
+    "pkg": "^5.8.1"
   },
   "files": [
     "index.js",
     "src/",
     "config.example.json",
     "logger.js",
+    "install-chrome.js",
     "README.md",
     "LICENSE"
   ],
-  "preferGlobal": true
+  "preferGlobal": true,
+  "pkg": {
+    "scripts": [
+      "src/**/*.js",
+      "logger.js",
+      "node_modules/axios/lib/**/*.js",
+      "node_modules/blessed/**/*.js",
+      "node_modules/inquirer/**/*.js",
+      "node_modules/chalk/**/*.js",
+      "node_modules/puppeteer-extra/dist/index.cjs.js",
+      "node_modules/puppeteer-extra-plugin-stealth/**/*.js",
+      "!node_modules/puppeteer-extra/dist/index.esm.js",
+      "!node_modules/**/*.test.js",
+      "!node_modules/**/*.d.ts"
+    ],
+    "assets": [
+      "config.example.json",
+      "node_modules/blessed/blessed.js",
+      "node_modules/blessed-contrib/**/*",
+      "node_modules/puppeteer-extra-plugin-stealth/evasions/**/*"
+    ],
+    "targets": [
+      "node18-linux-x64",
+      "node18-macos-x64",
+      "node18-macos-arm64",
+      "node18-win-x64"
+    ],
+    "outputPath": "dist",
+    "options": [
+      "--no-bytecode",
+      "--public-packages=*"
+    ]
+  }
 }

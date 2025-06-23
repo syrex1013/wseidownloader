@@ -29,3 +29,12 @@ npm-debug.log*
 
 # Downloaded files
 downloads/
+
+# Test artifacts
+coverage/
+*.lcov
+junit.xml
+
+# Build artifacts
+dist/
+*.exe

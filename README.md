@@ -140,14 +140,101 @@ The downloader provides real-time updates on:
 
 ## 🔧 Scripts
 
-| Command            | Description                     |
-| ------------------ | ------------------------------- |
-| `npm start`        | 🚀 Start the downloader         |
-| `npm run dev`      | 🔍 Start with debugging enabled |
-| `npm run lint`     | 🧹 Check code style             |
-| `npm run lint:fix` | ✨ Fix code style issues        |
-| `npm run clean`    | 🗑️ Clean downloads and logs     |
-| `npm run setup`    | ⚙️ Create example configuration |
+| Command                 | Description                       |
+| ----------------------- | --------------------------------- |
+| `npm start`             | 🚀 Start the downloader           |
+| `npm run dev`           | 🔍 Start with debugging enabled   |
+| `npm run lint`          | 🧹 Check code style               |
+| `npm run lint:fix`      | ✨ Fix code style issues          |
+| `npm test`              | 🧪 Run unit tests                 |
+| `npm run test:watch`    | 👀 Run tests in watch mode        |
+| `npm run test:coverage` | 📊 Run tests with coverage report |
+| `npm run build:exe`     | 📦 Build standalone executables   |
+| `npm run clean`         | 🗑️ Clean downloads and logs       |
+| `npm run setup`         | ⚙️ Create example configuration   |
+
+## 🧪 Testing
+
+This project includes comprehensive unit tests to ensure reliability and maintainability.
+
+### Running Tests
+
+```bash
+# Run all tests once
+npm test
+
+# Run tests in watch mode (re-runs on file changes)
+npm run test:watch
+
+# Run tests with coverage report
+npm run test:coverage
+```
+
+### Test Structure
+
+- **Unit Tests** - Test individual functions and modules
+- **Integration Tests** - Test component interactions
+- **Mocked Dependencies** - Puppeteer and file system operations are mocked
+
+Test files are located in the `tests/` directory and follow the pattern `*.test.js`.
+
+### Coverage Reports
+
+Coverage reports are generated in the `coverage/` directory and include:
+
+- HTML report for detailed visualization
+- LCOV format for CI/CD integration
+- Text summary in terminal
+
+## 📦 Building Executables
+
+Create standalone executables for different platforms:
+
+```bash
+# Build executables for all platforms
+npm run build:exe
+
+# Executables will be created in the dist/ directory:
+# - wsei-course-downloader-linux-x64
+# - wsei-course-downloader-macos-x64
+# - wsei-course-downloader-macos-arm64
+# - wsei-course-downloader-win-x64.exe
+```
+
+### Supported Platforms
+
+| Platform | Architecture  | Executable Name                      |
+| -------- | ------------- | ------------------------------------ |
+| Linux    | x64           | `wsei-course-downloader-linux-x64`   |
+| macOS    | x64 (Intel)   | `wsei-course-downloader-macos-x64`   |
+| macOS    | arm64 (M1/M2) | `wsei-course-downloader-macos-arm64` |
+| Windows  | x64           | `wsei-course-downloader-win-x64.exe` |
+
+### Running Executables
+
+```bash
+# Linux/macOS
+./dist/wsei-course-downloader-linux-x64
+
+# Windows
+./dist/wsei-course-downloader-win-x64.exe
+```
+
+## 🔄 CI/CD Pipeline
+
+This project includes a GitHub Actions workflow that:
+
+1. **🧪 Runs Tests** - Executes unit tests on multiple Node.js versions
+2. **🧹 Code Quality** - Runs linting and style checks
+3. **📊 Coverage** - Generates and uploads coverage reports
+4. **📦 Build Validation** - Tests executable building process
+5. **🚀 Release Builds** - Creates executables for all platforms on releases
+
+### Workflow Triggers
+
+- **Push** to `main` or `develop` branches
+- **Pull Requests** to `main` branch
+- **Releases** (creates and uploads executables)
 
 ## 📝 Logging
 
