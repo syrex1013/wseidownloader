@@ -1,41 +1,74 @@
 #!/usr/bin/env node
 
 /**
- * Chrome Installation Script for WSEI Course Downloader
- *
- * This script installs the required Chrome browser for the standalone executable.
- * Run this once after downloading the executable.
+ * Standalone Chrome installer for WSEI Course Downloader
+ * This script downloads and installs Chrome browser using Puppeteer
  */
 
-const { execSync } = require("child_process");
+const puppeteer = require("puppeteer-extra");
+const chalk = require("chalk");
 
-console.log("🎓 WSEI Course Downloader - Chrome Installation");
-console.log("=".repeat(50));
+async function installChrome() {
+  console.log(chalk.cyan("🌐 WSEI Course Downloader - Chrome Installer"));
+  console.log(chalk.yellow("📥 Downloading Chrome browser..."));
+  console.log();
 
-try {
-  console.log("📦 Installing Chrome browser for Puppeteer...");
+  try {
+    // Create browser fetcher
+    const browserFetcher = puppeteer.createBrowserFetcher();
 
-  // Install Chrome using puppeteer
-  execSync("npx puppeteer browsers install chrome", {
-    stdio: "inherit",
-    cwd: process.cwd(),
-  });
+    // Check if Chrome is already installed
+    const revisions = await browserFetcher.localRevisions();
 
-  console.log("");
-  console.log("✅ Chrome installation completed successfully!");
-  console.log("");
-  console.log("🚀 You can now run the WSEI Course Downloader:");
-  console.log("   ./wsei-course-downloader-macos-arm64  (Apple Silicon)");
-  console.log("   ./wsei-course-downloader-macos-x64    (Intel Mac)");
-  console.log("   ./wsei-course-downloader-linux-x64    (Linux)");
-  console.log("   ./wsei-course-downloader-win-x64.exe  (Windows)");
-  console.log("");
-} catch (error) {
-  console.error("❌ Failed to install Chrome:", error.message);
-  console.log("");
-  console.log("💡 Manual installation steps:");
-  console.log("1. Make sure you have Node.js installed");
-  console.log("2. Run: npx puppeteer browsers install chrome");
-  console.log("3. Try running the downloader again");
-  process.exit(1);
+    if (revisions.length > 0) {
+      console.log(chalk.green("✅ Chrome browser is already installed!"));
+      console.log(
+        chalk.blue(
+          `📁 Location: ${
+            browserFetcher.revisionInfo(revisions[0]).executablePath
+          }`
+        )
+      );
+      return;
+    }
+
+    // Download Chrome
+    console.log(chalk.yellow("⏳ This may take a few minutes..."));
+
+    const revisionInfo = await browserFetcher.download(
+      puppeteer.PUPPETEER_REVISIONS.chromium,
+      (downloadedBytes, totalBytes) => {
+        const percent = Math.round((downloadedBytes / totalBytes) * 100);
+        process.stdout.write(
+          `\r${chalk.yellow(`📥 Downloading... ${percent}%`)}`
+        );
+      }
+    );
+
+    console.log();
+    console.log(chalk.green("✅ Chrome browser installed successfully!"));
+    console.log(chalk.blue(`📁 Location: ${revisionInfo.executablePath}`));
+    console.log();
+    console.log(chalk.cyan("🚀 You can now run the WSEI Course Downloader!"));
+  } catch (error) {
+    console.error(chalk.red("❌ Failed to install Chrome:"), error.message);
+    console.log();
+    console.log(chalk.yellow("💡 Alternative installation methods:"));
+    console.log(
+      chalk.white("   • Download from: https://www.google.com/chrome/")
+    );
+    console.log(chalk.white("   • Windows: winget install Google.Chrome"));
+    console.log(chalk.white("   • macOS: brew install --cask google-chrome"));
+    console.log(
+      chalk.white("   • Linux: sudo apt install google-chrome-stable")
+    );
+    process.exit(1);
+  }
 }
+
+// Run if executed directly
+if (require.main === module) {
+  installChrome();
+}
+
+module.exports = { installChrome };

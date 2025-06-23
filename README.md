@@ -3,9 +3,10 @@
 > **Professional automated course material downloader for WSEI e-learning platform** 🚀
 
 <!-- Add your picture here when ready -->
+
 ![WSEI Downloader](https://i.imgur.com/sgB5MpJ.png)
 
-[![Version](https://img.shields.io/badge/version-2.0.0-blue.svg)](https://github.com/yourusername/wsei-course-downloader)
+[![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)](https://github.com/syrex1013/wseidownloader)
 [![Node.js](https://img.shields.io/badge/node-%3E%3D14.0.0-green.svg)](https://nodejs.org/)
 [![License](https://img.shields.io/badge/license-MIT-yellow.svg)](LICENSE)
 [![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20macOS%20%7C%20Linux-lightgrey.svg)]()
@@ -14,6 +15,7 @@
 
 🔧 **Professional & Reliable**
 
+- 🌐 **Automatic Chrome Installation** - No manual browser setup required!
 - 🔄 **Intelligent Retry Logic** - Handles network interruptions gracefully
 - 🎯 **Smart Course Selection** - Choose specific courses or download all
 - 📊 **Real-time Progress Tracking** - Beautiful progress bars and status updates
@@ -41,6 +43,7 @@
 - 📦 **Node.js** 14.0.0 or higher
 - 🔐 Valid WSEI e-learning platform credentials
 - 🌐 Stable internet connection
+- 💿 **Chrome browser automatically installed** on first run
 
 ### Installation
 
@@ -303,8 +306,9 @@ We welcome contributions! 🎉
 
 **❌ Browser Issues**
 
+- Chrome browser automatically downloads on first run
+- No manual Chrome installation required
 - Try running with `headless: false` for debugging
-- Update Chrome/Chromium browser
 - Check browser arguments compatibility
 
 ### Getting Help

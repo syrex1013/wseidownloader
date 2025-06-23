@@ -21,6 +21,40 @@ const logger = require('../logger');
 puppeteer.use(StealthPlugin());
 
 /**
+ * Ensures Chrome browser is installed and available
+ * @returns {Promise<void>}
+ */
+async function ensureBrowserInstalled() {
+  logger.info('🔍 Checking Chrome browser availability...');
+
+  try {
+    // Try to get browser path - this will download Chrome if not available
+    const browserFetcher = puppeteer.createBrowserFetcher();
+    const revisions = await browserFetcher.localRevisions();
+
+    if (revisions.length === 0) {
+      console.log(chalk.yellow('📥 Chrome browser not found. Downloading...'));
+      logger.info('Downloading Chrome browser...');
+
+      // Download the latest Chrome revision
+      const revisionInfo = await browserFetcher.download(
+        puppeteer.PUPPETEER_REVISIONS.chromium,
+      );
+      logger.info(`Chrome downloaded to: ${revisionInfo.executablePath}`);
+      console.log(chalk.green('✅ Chrome browser downloaded successfully!'));
+    } else {
+      logger.info('Chrome browser found locally');
+      console.log(chalk.green('✅ Chrome browser ready!'));
+    }
+  } catch (error) {
+    logger.error('Failed to ensure browser installation', {
+      error: error.message,
+    });
+    throw new Error(`Browser installation failed: ${error.message}`);
+  }
+}
+
+/**
  * Global statistics object to track download progress
  */
 const stats = {
@@ -57,6 +91,9 @@ async function main() {
     // Display application header
     displayHeader();
 
+    // Ensure Chrome browser is installed
+    await ensureBrowserInstalled();
+
     // Launch browser with enhanced error handling
     logger.info('🌐 Launching browser...');
 
@@ -78,6 +115,8 @@ async function main() {
             '--disable-backgrounding-occluded-windows',
             '--disable-renderer-backgrounding',
             '--disable-features=site-per-process',
+            '--disable-web-security',
+            '--disable-features=VizDisplayCompositor',
           ],
           ignoreDefaultArgs: ['--enable-automation'],
           defaultViewport: null,

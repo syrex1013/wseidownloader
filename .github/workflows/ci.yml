@@ -125,48 +125,30 @@ jobs:
 
             ## 🚀 Quick Start
             1. **Download** the appropriate binary for your platform
-            2. **Install Chrome** (see instructions below)
-            3. **Make executable**: `chmod +x wsei-downloader-*` (Linux/macOS only)
-            4. **Run**: `./wsei-downloader-*` or `wsei-downloader-*.exe`
-            5. **Follow setup wizard** to configure your credentials
-
-            ## 🌐 Chrome Installation (Required)
-
-            ### Windows
-            ```bash
-            # Download and install Chrome from: https://www.google.com/chrome/
-            # Or use winget:
-            winget install Google.Chrome
-            ```
-
-            ### macOS
-            ```bash
-            # Download from: https://www.google.com/chrome/
-            # Or use Homebrew:
-            brew install --cask google-chrome
-            ```
-
-            ### Linux (Ubuntu/Debian)
-            ```bash
-            wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
-            echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" | sudo tee /etc/apt/sources.list.d/google-chrome.list
-            sudo apt update
-            sudo apt install google-chrome-stable
-            ```
-
-            ### Linux (CentOS/RHEL/Fedora)
-            ```bash
-            sudo dnf install google-chrome-stable
-            # Or download RPM from: https://www.google.com/chrome/
-            ```
+            2. **Make executable**: `chmod +x wsei-downloader-*` (Linux/macOS only)
+            3. **Run**: `./wsei-downloader-*` or `wsei-downloader-*.exe`
+            4. **Follow setup wizard** to configure your credentials
 
             ## ✨ Features
-            - Multi-platform support (Windows, macOS, Linux)
-            - Automated login and session management
-            - Smart file detection and duplicate handling
-            - Progress tracking with beautiful CLI interface
-            - Comprehensive error handling and retry logic
-            - Professional logging and debugging capabilities
+            - **🌐 Automatic Chrome Installation** - No manual browser setup required!
+            - **🔧 Multi-platform support** (Windows, macOS, Linux)
+            - **🔐 Automated login and session management**
+            - **🎯 Smart file detection and duplicate handling**
+            - **📊 Progress tracking with beautiful CLI interface**
+            - **🔄 Comprehensive error handling and retry logic**
+            - **📝 Professional logging and debugging capabilities**
+
+            ## 💡 What's New
+            - Chrome browser automatically downloads and installs on first run
+            - No more manual Chrome installation required
+            - Improved error handling and user experience
+            - Enhanced progress tracking and status updates
+
+            ## 🛠️ Technical Details
+            - Built with Puppeteer for reliable web automation
+            - Cross-platform executable with pkg
+            - Comprehensive test suite (40+ tests)
+            - Professional CI/CD pipeline
 
             Built with ❤️ for WSEI students and educators.
           files: dist/wsei-downloader-${{ matrix.platform }}-${{ matrix.arch }}*
