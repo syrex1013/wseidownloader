@@ -89,6 +89,7 @@
     "logger.js",
     "install-chrome.js",
     "README.md",
+    "CHROME_INSTALLATION.md",
     "LICENSE"
   ],
   "preferGlobal": true,
@@ -108,6 +109,7 @@
     ],
     "assets": [
       "config.example.json",
+      "CHROME_INSTALLATION.md",
       "node_modules/blessed/blessed.js",
       "node_modules/blessed-contrib/**/*",
       "node_modules/puppeteer-extra-plugin-stealth/evasions/**/*"
