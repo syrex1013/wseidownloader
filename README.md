@@ -3,7 +3,7 @@
 > **Professional automated course material downloader for WSEI e-learning platform** 🚀
 
 <!-- Add your picture here when ready -->
-<!-- ![WSEI Downloader](https://i.imgur.com/sgB5MpJ.png) -->
+![WSEI Downloader](https://i.imgur.com/sgB5MpJ.png)
 
 [![Version](https://img.shields.io/badge/version-2.0.0-blue.svg)](https://github.com/yourusername/wsei-course-downloader)
 [![Node.js](https://img.shields.io/badge/node-%3E%3D14.0.0-green.svg)](https://nodejs.org/)
