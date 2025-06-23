@@ -21,6 +21,19 @@ describe("configManager", () => {
     jest.restoreAllMocks();
   });
 
+  // Helper function to create a fresh valid config for each test
+  const createValidConfig = () => ({
+    credentials: {
+      username: "test@example.com",
+      password: "password123",
+    },
+    urls: {
+      loginUrl: "https://example.com/login",
+      coursesUrl: "https://example.com/courses",
+    },
+    downloadDir: "downloads",
+  });
+
   describe("getDefaultConfig", () => {
     test("should return a valid default configuration", () => {
       const config = getDefaultConfig();
@@ -38,24 +51,13 @@ describe("configManager", () => {
   });
 
   describe("validateConfig", () => {
-    const validConfig = {
-      credentials: {
-        username: "test@example.com",
-        password: "password123",
-      },
-      urls: {
-        loginUrl: "https://example.com/login",
-        coursesUrl: "https://example.com/courses",
-      },
-      downloadDir: "downloads",
-    };
-
     test("should validate a correct configuration", () => {
+      const validConfig = createValidConfig();
       expect(() => validateConfig(validConfig)).not.toThrow();
     });
 
     test("should throw error for missing credentials.username", () => {
-      const invalidConfig = { ...validConfig };
+      const invalidConfig = createValidConfig();
       delete invalidConfig.credentials.username;
 
       expect(() => validateConfig(invalidConfig)).toThrow(
@@ -64,13 +66,8 @@ describe("configManager", () => {
     });
 
     test("should throw error for empty credentials.password", () => {
-      const invalidConfig = {
-        ...validConfig,
-        credentials: {
-          ...validConfig.credentials,
-          password: "",
-        },
-      };
+      const invalidConfig = createValidConfig();
+      invalidConfig.credentials.password = "";
 
       expect(() => validateConfig(invalidConfig)).toThrow(
         "Password cannot be empty"
@@ -78,13 +75,8 @@ describe("configManager", () => {
     });
 
     test("should throw error for invalid loginUrl", () => {
-      const invalidConfig = {
-        ...validConfig,
-        urls: {
-          ...validConfig.urls,
-          loginUrl: "not-a-valid-url",
-        },
-      };
+      const invalidConfig = createValidConfig();
+      invalidConfig.urls.loginUrl = "not-a-valid-url";
 
       expect(() => validateConfig(invalidConfig)).toThrow(
         "Invalid login URL format"
@@ -92,13 +84,8 @@ describe("configManager", () => {
     });
 
     test("should throw error for invalid coursesUrl", () => {
-      const invalidConfig = {
-        ...validConfig,
-        urls: {
-          ...validConfig.urls,
-          coursesUrl: "invalid-url",
-        },
-      };
+      const invalidConfig = createValidConfig();
+      invalidConfig.urls.coursesUrl = "invalid-url";
 
       expect(() => validateConfig(invalidConfig)).toThrow(
         "Invalid courses URL format"
@@ -106,7 +93,7 @@ describe("configManager", () => {
     });
 
     test("should throw error for empty downloadDir", () => {
-      const invalidConfig = { ...validConfig };
+      const invalidConfig = createValidConfig();
       invalidConfig.downloadDir = "";
 
       expect(() => validateConfig(invalidConfig)).toThrow(
@@ -117,17 +104,7 @@ describe("configManager", () => {
 
   describe("loadConfig", () => {
     test("should load valid configuration file", () => {
-      const mockConfig = {
-        credentials: {
-          username: "test@example.com",
-          password: "password123",
-        },
-        urls: {
-          loginUrl: "https://example.com/login",
-          coursesUrl: "https://example.com/courses",
-        },
-        downloadDir: "downloads",
-      };
+      const mockConfig = createValidConfig();
 
       fs.existsSync.mockReturnValue(true);
       fs.readFileSync.mockReturnValue(JSON.stringify(mockConfig));

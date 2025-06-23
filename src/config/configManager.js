@@ -46,17 +46,23 @@ function loadConfig() {
 function validateConfig(config) {
   const requiredFields = [
     'credentials.username',
-    'credentials.password',
     'urls.loginUrl',
     'urls.coursesUrl',
     'downloadDir',
   ];
 
+  // Check required fields (except password, which has special handling)
   for (const field of requiredFields) {
     const value = getNestedValue(config, field);
     if (!value || (typeof value === 'string' && value.trim() === '')) {
       throw new Error(`Missing or empty required field: ${field}`);
     }
+  }
+
+  // Special handling for password - check if it exists first
+  const password = getNestedValue(config, 'credentials.password');
+  if (!password || (typeof password === 'string' && password.trim() === '')) {
+    throw new Error('Password cannot be empty');
   }
 
   // Validate URLs
@@ -73,10 +79,6 @@ function validateConfig(config) {
     throw new Error(
       'Invalid username format: must be a non-empty string (username or email)',
     );
-  }
-
-  if (config.credentials.password.length < 1) {
-    throw new Error('Password cannot be empty');
   }
 }
 

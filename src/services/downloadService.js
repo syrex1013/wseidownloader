@@ -1,16 +1,16 @@
-const fs = require("fs");
-const path = require("path");
-const axios = require("axios");
-const chalk = require("chalk");
+const fs = require('fs');
+const path = require('path');
+const axios = require('axios');
+const chalk = require('chalk');
 const {
   fileExistsAndValid,
   ensureDirectoryExists,
   getFileExtension,
   sanitizeFilename,
   formatBytes,
-} = require("../utils/fileUtils");
-const { getProgressBar } = require("../utils/progressBar");
-const logger = require("../../logger");
+} = require('../utils/fileUtils');
+const { getProgressBar } = require('../utils/progressBar');
+const logger = require('../../logger');
 
 /**
  * Downloads a single resource file from the WSEI platform with retry logic.
@@ -29,12 +29,12 @@ async function downloadResourceFile(
   courseFolder,
   cookies,
   onProgress,
-  retryCount = 0
+  retryCount = 0,
 ) {
   const MAX_RETRIES = 3;
   const DOWNLOAD_TIMEOUT = 120000; // Increased to 120 seconds
   let resourcePage = null;
-  let finalUrl = "not-visited";
+  let finalUrl = 'not-visited';
   let downloadInfo = null;
   let navigationAborted = false;
 
@@ -51,10 +51,10 @@ async function downloadResourceFile(
     } catch (pageError) {
       if (
         retryCount < MAX_RETRIES &&
-        pageError.message.includes("Connection closed")
+        pageError.message.includes('Connection closed')
       ) {
         logger.warn(
-          `Connection closed, retrying... (${retryCount + 1}/${MAX_RETRIES})`
+          `Connection closed, retrying... (${retryCount + 1}/${MAX_RETRIES})`,
         );
         await new Promise((resolve) => setTimeout(resolve, 2000)); // Wait 2 seconds
         return downloadResourceFile(
@@ -63,7 +63,7 @@ async function downloadResourceFile(
           courseFolder,
           cookies,
           onProgress,
-          retryCount + 1
+          retryCount + 1,
         );
       }
       throw pageError;
@@ -76,16 +76,16 @@ async function downloadResourceFile(
     try {
       logger.debug(`Navigating to: ${resource.url}`);
       response = await resourcePage.goto(resource.url, {
-        waitUntil: "networkidle2",
+        waitUntil: 'networkidle2',
         timeout: 30000, // Reduced timeout
       });
     } catch (error) {
       if (
-        error.message.includes("net::ERR_ABORTED") ||
-        error.constructor.name === "TimeoutError"
+        error.message.includes('net::ERR_ABORTED') ||
+        error.constructor.name === 'TimeoutError'
       ) {
         logger.debug(
-          "Navigation aborted/timeout - likely a direct download trigger."
+          'Navigation aborted/timeout - likely a direct download trigger.',
         );
         navigationAborted = true;
       } else {
@@ -98,43 +98,43 @@ async function downloadResourceFile(
 
     if (navigationAborted) {
       logger.info(
-        "Navigation aborted, assuming direct download from original URL."
+        'Navigation aborted, assuming direct download from original URL.',
       );
       downloadInfo = {
         url: resource.url,
         filename: resource.name,
-        method: "aborted-navigation-direct-download",
+        method: 'aborted-navigation-direct-download',
       };
-    } else if (response && response.headers()["content-disposition"]) {
+    } else if (response && response.headers()['content-disposition']) {
       // Strategy 1: The page itself is the file (common for direct links).
-      const disposition = response.headers()["content-disposition"];
+      const disposition = response.headers()['content-disposition'];
       const filenameMatch = disposition.match(
-        /filename\*?=(UTF-8''|")?([^";]+)"?/
+        /filename\*?=(UTF-8''|")?([^";]+)"?/,
       );
       const filename = decodeURIComponent(filenameMatch[2]);
 
       downloadInfo = {
         url: finalUrl,
         filename: sanitizeFilename(filename),
-        method: "content-disposition",
+        method: 'content-disposition',
       };
-      logger.info("Download strategy: content-disposition", { filename });
+      logger.info('Download strategy: content-disposition', { filename });
     } else if (
-      finalUrl.includes("/pluginfile.php/") ||
+      finalUrl.includes('/pluginfile.php/') ||
       finalUrl.match(
-        /\.(pdf|doc|docx|ppt|pptx|xls|xlsx|zip|mp4|avi|mov|mkv|wmv|flv|webm)$/i
+        /\.(pdf|doc|docx|ppt|pptx|xls|xlsx|zip|mp4|avi|mov|mkv|wmv|flv|webm)$/i,
       )
     ) {
       // Strategy 2: URL is a direct file link.
       downloadInfo = {
         url: finalUrl,
-        filename: decodeURIComponent(finalUrl.split("/").pop().split("?")[0]),
-        method: "direct-file-url",
+        filename: decodeURIComponent(finalUrl.split('/').pop().split('?')[0]),
+        method: 'direct-file-url',
       };
-      logger.info("Download strategy: direct file URL", { url: finalUrl });
+      logger.info('Download strategy: direct file URL', { url: finalUrl });
     } else {
       // Strategy 3: Scrape the page for the actual download link.
-      logger.debug("Attempting to scrape page for download link", {
+      logger.debug('Attempting to scrape page for download link', {
         url: finalUrl,
       });
       downloadInfo = await Promise.race([
@@ -142,7 +142,7 @@ async function downloadResourceFile(
           /* global document, FormData, URLSearchParams, window */
           // Moodle folder download-all button
           const folderDownloadBtn = document.querySelector(
-            'button[type="submit"][name="download"]'
+            'button[type="submit"][name="download"]',
           );
           if (folderDownloadBtn && folderDownloadBtn.form) {
             const formData = new FormData(folderDownloadBtn.form);
@@ -152,64 +152,64 @@ async function downloadResourceFile(
             }
             return {
               url: `${folderDownloadBtn.form.action}?${params.toString()}`,
-              filename: "folder.zip",
-              method: "folder-zip-form",
+              filename: 'folder.zip',
+              method: 'folder-zip-form',
             };
           }
 
           const linkSelectors = [
             'a[href*="/pluginfile.php/"]',
-            "a.forcedownload",
-            ".resourceworkaround a",
+            'a.forcedownload',
+            '.resourceworkaround a',
             'a[href*="forcedownload=1"]',
             'a[href*="public.php/dav/files"]',
           ];
-          const downloadLink = document.querySelector(linkSelectors.join(", "));
+          const downloadLink = document.querySelector(linkSelectors.join(', '));
           if (downloadLink) {
             return {
               url: downloadLink.href,
               filename:
                 downloadLink.download ||
-                downloadLink.href.split("/").pop().split("?")[0],
-              method: "download-link",
+                downloadLink.href.split('/').pop().split('?')[0],
+              method: 'download-link',
             };
           }
 
           // Embedded content (PDFs, videos, etc.)
           const embed = document.querySelector(
-            'embed[type="application/pdf"], object[type="application/pdf"], iframe[src*=".pdf"], object[data], embed[src], video source, video[src]'
+            'embed[type="application/pdf"], object[type="application/pdf"], iframe[src*=".pdf"], object[data], embed[src], video source, video[src]',
           );
           if (embed) {
-            const src = embed.src || embed.data || embed.getAttribute("src");
+            const src = embed.src || embed.data || embed.getAttribute('src');
             if (src) {
               return {
                 url: new URL(src, window.location.origin).href,
-                filename: src.split("/").pop().split("?")[0],
-                method: "embedded-content",
+                filename: src.split('/').pop().split('?')[0],
+                method: 'embedded-content',
               };
             }
           }
           return null;
         }),
         new Promise((_, reject) =>
-          setTimeout(() => reject(new Error("Page evaluation timeout")), 10000)
+          setTimeout(() => reject(new Error('Page evaluation timeout')), 10000),
         ),
       ]);
 
       if (downloadInfo) {
-        logger.info("Download strategy: scraped from page", {
+        logger.info('Download strategy: scraped from page', {
           method: downloadInfo.method,
           url: downloadInfo.url,
         });
       } else {
         // If scraping fails, it means the page is likely just informational.
-        logger.warn("Could not find a download link on the page, skipping.", {
+        logger.warn('Could not find a download link on the page, skipping.', {
           resourceName: resource.name,
           finalUrl: finalUrl,
         });
         return {
           success: false,
-          error: "No download link found on page",
+          error: 'No download link found on page',
           filename: sanitizeFilename(resource.name),
           skipped: true,
         };
@@ -217,36 +217,36 @@ async function downloadResourceFile(
     }
 
     // Skip HTML files unless they're actual downloadable files
-    if (!downloadInfo && finalUrl && !finalUrl.startsWith("about:blank")) {
-      logger.debug("No download info found, checking if page contains file");
+    if (!downloadInfo && finalUrl && !finalUrl.startsWith('about:blank')) {
+      logger.debug('No download info found, checking if page contains file');
       // Check if the page contains a file or is just an HTML page
       const isFileResource = await Promise.race([
         resourcePage.evaluate(() => {
           /* global document */
           // Check for file indicators
           const hasDownloadLink = document.querySelector(
-            'a[href*="forcedownload"], a.forcedownload, .resourceworkaround a'
+            'a[href*="forcedownload"], a.forcedownload, .resourceworkaround a',
           );
           const hasEmbeddedContent = document.querySelector(
-            'embed, object[data], iframe[src*=".pdf"], video'
+            'embed, object[data], iframe[src*=".pdf"], video',
           );
           const hasFileIcon = document.querySelector(
-            'img[src*="/f/"], .activityicon[src*="/f/"]'
+            'img[src*="/f/"], .activityicon[src*="/f/"]',
           );
 
           return hasDownloadLink || hasEmbeddedContent || hasFileIcon;
         }),
         new Promise((_, reject) =>
-          setTimeout(() => reject(new Error("File check timeout")), 5000)
+          setTimeout(() => reject(new Error('File check timeout')), 5000),
         ),
       ]);
 
       if (!isFileResource) {
         // This is just an HTML page, not a downloadable resource
-        logger.info("Skipping HTML page - not a downloadable resource");
+        logger.info('Skipping HTML page - not a downloadable resource');
         return {
           success: false,
-          error: "Not a downloadable file - HTML page only",
+          error: 'Not a downloadable file - HTML page only',
           filename: sanitizeFilename(resource.name),
           skipped: true,
         };
@@ -255,25 +255,25 @@ async function downloadResourceFile(
 
     if (!downloadInfo) {
       // If we reach here and the final URL is about:blank, it's likely a failed navigation
-      if (finalUrl === "about:blank" || finalUrl === "not-visited") {
-        logger.warn("Navigation resulted in blank page, skipping", {
+      if (finalUrl === 'about:blank' || finalUrl === 'not-visited') {
+        logger.warn('Navigation resulted in blank page, skipping', {
           resourceName: resource.name,
           finalUrl: finalUrl,
         });
         return {
           success: false,
-          error: "Navigation resulted in blank page",
+          error: 'Navigation resulted in blank page',
           filename: sanitizeFilename(resource.name),
           skipped: true,
         };
       }
 
-      logger.error("Could not find download link", {
+      logger.error('Could not find download link', {
         resourceName: resource.name,
         finalUrl: finalUrl,
       });
       throw new Error(
-        "Could not find a valid download link or content on the page."
+        'Could not find a valid download link or content on the page.',
       );
     }
 
@@ -287,18 +287,18 @@ async function downloadResourceFile(
         path.join(
           courseFolder,
           sanitizeFilename(resource.name) +
-            getFileExtension(downloadInfo.url, resource.type)
-        )
+            getFileExtension(downloadInfo.url, resource.type),
+        ),
       )
     ) {
       const fileStats = fs.statSync(
         path.join(
           courseFolder,
           sanitizeFilename(resource.name) +
-            getFileExtension(downloadInfo.url, resource.type)
-        )
+            getFileExtension(downloadInfo.url, resource.type),
+        ),
       );
-      logger.info("File already exists, skipping", {
+      logger.info('File already exists, skipping', {
         filename: resource.name,
         size: fileStats.size,
       });
@@ -314,25 +314,25 @@ async function downloadResourceFile(
 
     const cookieString = (await resourcePage.cookies())
       .map((c) => `${c.name}=${c.value}`)
-      .join("; ");
+      .join('; ');
 
     const progressBar = getProgressBar();
 
     // Download with timeout and progress tracking
-    logger.debug("Starting axios download", { url: downloadInfo.url });
+    logger.debug('Starting axios download', { url: downloadInfo.url });
 
     let downloadResponse;
     try {
       downloadResponse = await Promise.race([
         axios({
-          method: "GET",
+          method: 'GET',
           url: downloadInfo.url,
-          responseType: "stream",
+          responseType: 'stream',
           headers: {
             Cookie: cookieString,
-            "User-Agent": await mainPage.browser().userAgent(),
+            'User-Agent': await mainPage.browser().userAgent(),
             Accept:
-              "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
+              'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
             Referer: resource.url,
           },
           maxRedirects: 15,
@@ -343,13 +343,13 @@ async function downloadResourceFile(
         }),
         new Promise((_, reject) =>
           setTimeout(
-            () => reject(new Error("Download request timeout")),
-            DOWNLOAD_TIMEOUT
-          )
+            () => reject(new Error('Download request timeout')),
+            DOWNLOAD_TIMEOUT,
+          ),
         ),
       ]);
     } catch (axiosError) {
-      logger.error("Axios download error", {
+      logger.error('Axios download error', {
         error: axiosError.message,
         url: downloadInfo.url,
         status: axiosError.response?.status,
@@ -359,45 +359,45 @@ async function downloadResourceFile(
     }
 
     // Final check: If the content type is HTML, it's not a file we want.
-    const contentType = downloadResponse.headers["content-type"] || "";
-    if (contentType.includes("text/html")) {
-      logger.warn("Downloaded content is an HTML page, not a file. Skipping.", {
+    const contentType = downloadResponse.headers['content-type'] || '';
+    if (contentType.includes('text/html')) {
+      logger.warn('Downloaded content is an HTML page, not a file. Skipping.', {
         url: downloadInfo.url,
       });
 
       // We must consume the stream to avoid memory leaks, but not save it.
-      downloadResponse.data.on("data", () => {});
-      await new Promise((resolve) => downloadResponse.data.on("end", resolve));
+      downloadResponse.data.on('data', () => {});
+      await new Promise((resolve) => downloadResponse.data.on('end', resolve));
 
       return {
         success: false,
-        error: "Downloaded content was an HTML page",
+        error: 'Downloaded content was an HTML page',
         filename: sanitizeFilename(resource.name),
         skipped: true,
       };
     }
 
     const totalBytes =
-      parseInt(downloadResponse.headers["content-length"]) || 0;
+      parseInt(downloadResponse.headers['content-length']) || 0;
     let downloadedBytes = 0;
 
-    logger.info("Download started", {
+    logger.info('Download started', {
       filename: resource.name,
       totalBytes,
-      contentType: downloadResponse.headers["content-type"],
+      contentType: downloadResponse.headers['content-type'],
     });
 
     const writer = fs.createWriteStream(
       path.join(
         courseFolder,
         sanitizeFilename(resource.name) +
-          getFileExtension(downloadInfo.url, resource.type)
-      )
+          getFileExtension(downloadInfo.url, resource.type),
+      ),
     );
     let lastProgressUpdate = Date.now();
 
     // Track download progress
-    downloadResponse.data.on("data", (chunk) => {
+    downloadResponse.data.on('data', (chunk) => {
       downloadedBytes += chunk.length;
 
       const now = Date.now();
@@ -412,34 +412,34 @@ async function downloadResourceFile(
     await new Promise((resolve, reject) => {
       const timeout = setTimeout(() => {
         writer.destroy();
-        logger.error("File write timeout", {
+        logger.error('File write timeout', {
           filename: resource.name,
           downloadedBytes,
         });
-        reject(new Error("File write timeout"));
+        reject(new Error('File write timeout'));
       }, DOWNLOAD_TIMEOUT);
 
-      writer.on("finish", () => {
+      writer.on('finish', () => {
         clearTimeout(timeout);
-        logger.info("Download completed", {
+        logger.info('Download completed', {
           filename: resource.name,
           downloadedBytes,
         });
         resolve();
       });
 
-      writer.on("error", (err) => {
+      writer.on('error', (err) => {
         clearTimeout(timeout);
-        logger.error("Writer error", {
+        logger.error('Writer error', {
           filename: resource.name,
           error: err.message,
         });
         reject(err);
       });
 
-      downloadResponse.data.on("error", (err) => {
+      downloadResponse.data.on('error', (err) => {
         clearTimeout(timeout);
-        logger.error("Download stream error", {
+        logger.error('Download stream error', {
           filename: resource.name,
           error: err.message,
         });
@@ -451,25 +451,25 @@ async function downloadResourceFile(
       path.join(
         courseFolder,
         sanitizeFilename(resource.name) +
-          getFileExtension(downloadInfo.url, resource.type)
-      )
+          getFileExtension(downloadInfo.url, resource.type),
+      ),
     );
     if (finalStats.size < 100) {
       fs.unlinkSync(
         path.join(
           courseFolder,
           sanitizeFilename(resource.name) +
-            getFileExtension(downloadInfo.url, resource.type)
-        )
+            getFileExtension(downloadInfo.url, resource.type),
+        ),
       ); // Delete tiny files, likely error pages
-      logger.warn("Downloaded file too small, likely error page", {
+      logger.warn('Downloaded file too small, likely error page', {
         filename: resource.name,
         size: finalStats.size,
       });
-      throw new Error("Downloaded file is empty or an error page.");
+      throw new Error('Downloaded file is empty or an error page.');
     }
 
-    logger.info("Download successful", {
+    logger.info('Download successful', {
       filename: resource.name,
       size: finalStats.size,
     });
@@ -481,8 +481,8 @@ async function downloadResourceFile(
       resourceUrl: resource.url,
       resourceType: resource.type,
       finalUrl: finalUrl,
-      downloadUrl: downloadInfo?.url || "not found",
-      downloadMethod: downloadInfo?.method || "none",
+      downloadUrl: downloadInfo?.url || 'not found',
+      downloadMethod: downloadInfo?.method || 'none',
       filename: sanitizeFilename(resource.name),
       courseFolder: courseFolder,
       error: error.message,
@@ -493,23 +493,23 @@ async function downloadResourceFile(
 
     logger.logDownloadError(
       `Failed to download: ${resource.name}`,
-      errorDetails
+      errorDetails,
     );
 
     // Retry on connection errors
     if (
       retryCount < MAX_RETRIES &&
-      (error.message.includes("Connection closed") ||
-        error.message.includes("Protocol error") ||
-        error.message.includes("Target closed") ||
-        error.message.includes("timeout") ||
-        error.message.includes("ECONNRESET") ||
-        error.message.includes("ETIMEDOUT"))
+      (error.message.includes('Connection closed') ||
+        error.message.includes('Protocol error') ||
+        error.message.includes('Target closed') ||
+        error.message.includes('timeout') ||
+        error.message.includes('ECONNRESET') ||
+        error.message.includes('ETIMEDOUT'))
     ) {
       logger.warn(
         `Connection error, retrying... (${retryCount + 1}/${MAX_RETRIES}): ${
           error.message
-        }`
+        }`,
       );
       await new Promise((resolve) => setTimeout(resolve, 3000)); // Increased delay
       return downloadResourceFile(
@@ -518,7 +518,7 @@ async function downloadResourceFile(
         courseFolder,
         cookies,
         onProgress,
-        retryCount + 1
+        retryCount + 1,
       );
     }
 
@@ -533,7 +533,7 @@ async function downloadResourceFile(
         await resourcePage.close();
       } catch (closeError) {
         // Ignore close errors
-        logger.debug("Error closing page:", closeError.message);
+        logger.debug('Error closing page:', closeError.message);
       }
     }
   }
@@ -546,13 +546,13 @@ async function downloadCourseMaterials(
   page,
   selectedCourses,
   downloadDir,
-  stats
+  stats,
 ) {
   const mainDownloadDir = path.join(process.cwd(), downloadDir);
   ensureDirectoryExists(mainDownloadDir);
   const cookies = await page.cookies();
   const progressBar = getProgressBar();
-  let statusMessage = chalk.cyan("Analyzing courses...");
+  let statusMessage = chalk.cyan('Analyzing courses...');
 
   const updateUI = () => {
     const processedCount =
@@ -560,15 +560,15 @@ async function downloadCourseMaterials(
     progressBar.update(processedCount, stats, statusMessage);
   };
 
-  logger.info("📊 Analyzing courses and preparing download queue...");
+  logger.info('📊 Analyzing courses and preparing download queue...');
   updateUI();
 
   const resourceQueue = [];
   for (const course of selectedCourses) {
-    const { extractResources } = require("./courseService");
+    const { extractResources } = require('./courseService');
     const resources = await extractResources(page, course.url);
-    const courseFolderName = require("../utils/fileUtils").normalizeFolderName(
-      course.name
+    const courseFolderName = require('../utils/fileUtils').normalizeFolderName(
+      course.name,
     );
     const courseFolder = path.join(mainDownloadDir, courseFolderName);
 
@@ -584,7 +584,7 @@ async function downloadCourseMaterials(
 
   stats.totalFiles = resourceQueue.length;
   statusMessage = chalk.green(
-    `✓ Found ${stats.totalFiles} total resources to process.`
+    `✓ Found ${stats.totalFiles} total resources to process.`,
   );
   progressBar.start(stats.totalFiles);
   updateUI();
@@ -602,22 +602,22 @@ async function downloadCourseMaterials(
       const onProgress = (downloadedBytes, totalBytes, filename) => {
         const downloadedMB = (downloadedBytes / 1024 / 1024).toFixed(1);
         const totalMB =
-          totalBytes > 0 ? (totalBytes / 1024 / 1024).toFixed(1) : "?";
+          totalBytes > 0 ? (totalBytes / 1024 / 1024).toFixed(1) : '?';
         const percentage =
           totalBytes > 0 ? Math.round((downloadedBytes / totalBytes) * 100) : 0;
 
         if (totalBytes > 0) {
           statusMessage = `📥 ${filename.substring(
             0,
-            20
+            20,
           )}... ${downloadedMB}MB/${totalMB}MB (${percentage}%)`;
         } else {
-          const spinner = ["⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"];
+          const spinner = ['⠋', '⠙', '⠹', '⠸', '⠼', '⠴', '⠦', '⠧', '⠇', '⠏'];
           const spinnerFrame =
             spinner[Math.floor(Date.now() / 100) % spinner.length];
           statusMessage = `📥 ${filename.substring(
             0,
-            20
+            20,
           )}... ${downloadedMB}MB ${spinnerFrame}`;
         }
         updateUI();
@@ -628,7 +628,7 @@ async function downloadCourseMaterials(
         item.resource,
         item.courseFolder,
         cookies,
-        onProgress
+        onProgress,
       );
     });
 
@@ -641,27 +641,27 @@ async function downloadCourseMaterials(
             stats.skippedFiles++;
             stats.totalSize += result.size || 0;
             statusMessage = chalk.yellow(
-              `⏭️ Skipped: ${result.filename} (exists)`
+              `⏭️ Skipped: ${result.filename} (exists)`,
             );
           } else {
             stats.downloadedFiles++;
             stats.totalSize += result.bytes || 0;
             statusMessage = chalk.green(
               `✅ Downloaded: ${result.filename} (${formatBytes(
-                result.bytes || 0
-              )})`
+                result.bytes || 0,
+              )})`,
             );
           }
         } else {
           if (result.skipped) {
             stats.skippedFiles++;
             statusMessage = chalk.yellow(
-              `⏭️ Skipped: ${result.filename} - ${result.error}`
+              `⏭️ Skipped: ${result.filename} - ${result.error}`,
             );
           } else {
             stats.failedFiles++;
             statusMessage = chalk.red(
-              `❌ Failed: ${result.filename} - ${result.error.substring(0, 60)}`
+              `❌ Failed: ${result.filename} - ${result.error.substring(0, 60)}`,
             );
           }
         }
@@ -669,7 +669,7 @@ async function downloadCourseMaterials(
       });
     } catch (batchError) {
       stats.failedFiles += chunk.length;
-      logger.error("Batch processing error", {
+      logger.error('Batch processing error', {
         error: batchError.message,
         stack: batchError.stack,
       });
@@ -683,7 +683,7 @@ async function downloadCourseMaterials(
   }
 
   progressBar.stop();
-  console.log(chalk.cyan("\n✨ Download process completed!\n"));
+  console.log(chalk.cyan('\n✨ Download process completed!\n'));
 }
 
 module.exports = {
