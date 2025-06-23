@@ -1,262 +1,230 @@
-# WSEI Course Downloader - Professional Edition
+# 🎓 WSEI Course Downloader
 
-[![Node.js Version](https://img.shields.io/badge/node-%3E%3D14.0.0-brightgreen.svg)](https://nodejs.org/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Code Style: ESLint](https://img.shields.io/badge/code%20style-eslint-brightgreen.svg)](https://eslint.org/)
+> **Professional automated course material downloader for WSEI e-learning platform** 🚀
 
-A professional, automated course material downloader for the WSEI e-learning platform. This tool helps students efficiently download course materials, presentations, documents, and other resources from their WSEI courses.
+<!-- Add your picture here when ready -->
+<!-- ![WSEI Downloader](https://i.imgur.com/sgB5MpJ.png) -->
+
+[![Version](https://img.shields.io/badge/version-2.0.0-blue.svg)](https://github.com/yourusername/wsei-course-downloader)
+[![Node.js](https://img.shields.io/badge/node-%3E%3D14.0.0-green.svg)](https://nodejs.org/)
+[![License](https://img.shields.io/badge/license-MIT-yellow.svg)](LICENSE)
+[![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20macOS%20%7C%20Linux-lightgrey.svg)]()
 
 ## ✨ Features
 
-- **🔐 Secure Authentication**: Automated login to WSEI platform
-- **📚 Course Discovery**: Automatically fetches all available courses
-- **🎯 Smart Selection**: Choose specific courses or download all
-- **📁 Organized Downloads**: Files are organized by course in separate folders
-- **⏭️ Smart Skipping**: Skips files that already exist (with validation)
-- **📊 Live Statistics**: Real-time download progress and statistics
-- **🔄 Multiple File Types**: Supports PDF, DOC, PPT, XLS, ZIP, MP4, and more
-- **🛡️ Error Handling**: Robust error handling and recovery
-- **📝 Professional Logging**: Comprehensive logging for debugging
-- **🎨 Beautiful CLI**: Professional terminal interface with colors and progress bars
+🔧 **Professional & Reliable**
 
-## 🏗️ Architecture
+- 🔄 **Intelligent Retry Logic** - Handles network interruptions gracefully
+- 🎯 **Smart Course Selection** - Choose specific courses or download all
+- 📊 **Real-time Progress Tracking** - Beautiful progress bars and status updates
+- 🛡️ **Error Resilience** - Comprehensive error handling and logging
+- ⚡ **Concurrent Downloads** - Optimized batch processing for faster downloads
 
-The application is built with a modular, production-ready architecture:
+📚 **Course Management**
 
-```
-src/
-├── app.js                 # Main application orchestrator
-├── config/
-│   └── configManager.js   # Configuration management
-├── services/
-│   ├── authService.js     # Authentication handling
-│   ├── courseService.js   # Course fetching and management
-│   ├── downloadService.js # File download operations
-│   └── courseSelectionService.js # Course selection UI
-└── utils/
-    ├── fileUtils.js       # File operations and utilities
-    └── uiUtils.js         # User interface utilities
-```
+- 📖 **Multiple File Types** - Supports PDFs, videos, documents, and more
+- 🏗️ **Organized Structure** - Automatically creates course-specific folders
+- 🔍 **Intelligent Detection** - Identifies downloadable resources automatically
+- 💾 **Duplicate Prevention** - Skips already downloaded files
+
+🎨 **User Experience**
+
+- 🖥️ **Interactive CLI** - Beautiful terminal interface with colors
+- 📈 **Detailed Statistics** - Track downloads, skips, and failures
+- 📝 **Comprehensive Logging** - Detailed logs for troubleshooting
+- ⚙️ **Easy Configuration** - Simple JSON-based setup
 
 ## 🚀 Quick Start
 
 ### Prerequisites
 
-- Node.js 14.0.0 or higher
-- npm 6.0.0 or higher
-- Valid WSEI account credentials
+- 📦 **Node.js** 14.0.0 or higher
+- 🔐 Valid WSEI e-learning platform credentials
+- 🌐 Stable internet connection
 
 ### Installation
 
-1. **Clone the repository:**
-
-   ```bash
-   git clone https://github.com/yourusername/wsei-course-downloader.git
-   cd wsei-course-downloader
-   ```
-
-2. **Install dependencies:**
-
-   ```bash
-   npm install
-   ```
-
-3. **Set up configuration:**
-
-   ```bash
-   npm run setup
-   cp config.example.json config.json
-   ```
-
-4. **Edit configuration:**
-   Open `config.json` and update with your WSEI credentials:
-
-   ```json
-   {
-     "credentials": {
-       "username": "your_email@wsei.pl",
-       "password": "your_password"
-     },
-     "urls": {
-       "loginUrl": "https://wsei.pl/login/index.php",
-       "coursesUrl": "https://wsei.pl/my/"
-     },
-     "downloadDir": "downloads"
-   }
-   ```
-
-5. **Run the application:**
-   ```bash
-   npm start
-   ```
-
-## 📖 Usage
-
-### Basic Usage
-
 ```bash
-# Start the downloader
-npm start
+# Clone the repository
+git clone https://github.com/yourusername/wsei-course-downloader.git
+cd wsei-course-downloader
 
-# Or run directly
-node index.js
+# Install dependencies
+npm install
+
+# Create configuration file
+cp config.example.json config.json
 ```
 
-### Advanced Usage
+### Configuration
 
-```bash
-# Development mode with debugging
-npm run dev
-
-# Clean downloads and logs
-npm run clean
-
-# Lint code
-npm run lint
-
-# Fix linting issues
-npm run lint:fix
-```
-
-### Global Installation
-
-```bash
-# Install globally
-npm install -g .
-
-# Run from anywhere
-wsei-downloader
-```
-
-## ⚙️ Configuration
-
-### Configuration File Structure
+Edit `config.json` with your credentials:
 
 ```json
 {
   "credentials": {
-    "username": "your_email@wsei.pl",
-    "password": "your_password"
+    "username": "your_wsei_username",
+    "password": "your_wsei_password"
   },
   "urls": {
-    "loginUrl": "https://wsei.pl/login/index.php",
-    "coursesUrl": "https://wsei.pl/my/"
+    "loginUrl": "https://dl.wsei.pl/login/index.php",
+    "coursesUrl": "https://dl.wsei.pl/my/courses.php"
   },
   "downloadDir": "downloads",
-  "browserOptions": {
+  "browser": {
     "headless": true,
     "args": [
       "--no-sandbox",
       "--disable-setuid-sandbox",
-      "--disable-dev-shm-usage"
+      "--disable-blink-features=AutomationControlled"
     ]
   }
 }
 ```
 
-### Environment Variables
-
-You can also use environment variables for sensitive data:
+### Usage
 
 ```bash
-export WSEI_USERNAME="your_email@wsei.pl"
-export WSEI_PASSWORD="your_password"
+# Start the downloader
+npm start
+# or
+node index.js
+
+# Run with development mode (with debugging)
+npm run dev
 ```
 
-## 🔧 Development
+## 📋 How It Works
 
-### Project Structure
+1. **🔐 Authentication** - Securely logs into WSEI platform
+2. **📚 Course Discovery** - Scans available courses
+3. **🎯 Selection Interface** - Interactive course selection menu
+4. **📊 Analysis** - Examines each course for downloadable materials
+5. **⚡ Download** - Concurrent, resumable downloads with progress tracking
+6. **📁 Organization** - Saves files in structured folders
 
-```
-wseidownloader/
-├── src/                   # Source code
-│   ├── app.js            # Main application
-│   ├── config/           # Configuration management
-│   ├── services/         # Business logic services
-│   └── utils/            # Utility functions
-├── downloads/            # Downloaded files (created automatically)
-├── logs/                 # Application logs
-├── config.json          # User configuration
-├── config.example.json  # Example configuration
-├── index.js             # Entry point
-├── logger.js            # Logging configuration
-└── package.json         # Project metadata
-```
+## 🛠️ Advanced Configuration
 
-### Code Quality
+### Browser Options
 
-The project uses ESLint for code quality:
-
-```bash
-# Check code quality
-npm run lint
-
-# Fix auto-fixable issues
-npm run lint:fix
+```json
+{
+  "browser": {
+    "headless": false, // Set to false for debugging
+    "slowMo": 100, // Add delay between actions
+    "args": ["--no-sandbox", "--disable-setuid-sandbox"]
+  }
+}
 ```
 
-### Adding New Features
+### Download Settings
 
-1. **Create a new service** in `src/services/`
-2. **Add utility functions** in `src/utils/`
-3. **Update configuration** in `src/config/` if needed
-4. **Add tests** (when test framework is added)
-5. **Update documentation**
+```json
+{
+  "downloadDir": "my-courses", // Custom download directory
+  "concurrency": 3, // Number of simultaneous downloads
+  "retryAttempts": 5, // Max retry attempts per file
+  "timeout": 120000 // Download timeout in milliseconds
+}
+```
+
+## 📊 Progress Tracking
+
+The downloader provides real-time updates on:
+
+- 📈 **Overall Progress** - Files processed vs. total files
+- 💾 **Download Speed** - Current transfer rate
+- 📁 **Current File** - What's being downloaded now
+- ✅ **Success Rate** - Downloads vs. failures
+- 💿 **Total Size** - Accumulated downloaded data
+
+## 🔧 Scripts
+
+| Command            | Description                     |
+| ------------------ | ------------------------------- |
+| `npm start`        | 🚀 Start the downloader         |
+| `npm run dev`      | 🔍 Start with debugging enabled |
+| `npm run lint`     | 🧹 Check code style             |
+| `npm run lint:fix` | ✨ Fix code style issues        |
+| `npm run clean`    | 🗑️ Clean downloads and logs     |
+| `npm run setup`    | ⚙️ Create example configuration |
+
+## 📝 Logging
+
+Comprehensive logging system:
+
+- **📊 General Logs** - Application flow and status
+- **📥 Download Logs** - Detailed download information
+- **❌ Error Logs** - Failed downloads with retry information
+- **🔍 Debug Logs** - Detailed debugging information (dev mode)
+
+Logs are stored in the `logs/` directory with automatic rotation.
+
+## 🤝 Contributing
+
+We welcome contributions! 🎉
+
+1. 🍴 Fork the repository
+2. 🌟 Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. ✅ Commit your changes (`git commit -m 'Add amazing feature'`)
+4. 📤 Push to the branch (`git push origin feature/amazing-feature`)
+5. 🔄 Open a Pull Request
+
+### Development Guidelines
+
+- 📏 Follow ESLint configuration
+- 📝 Add JSDoc comments for new functions
+- 🧪 Test your changes thoroughly
+- 📚 Update documentation as needed
+
+## 🛡️ Security
+
+- 🔒 Credentials are stored locally only
+- 🌐 No data is sent to external servers
+- 🛡️ Uses secure HTTPS connections
+- 🔐 Implements browser security features
+
+## 📚 Dependencies
+
+### Core Dependencies
+
+- **🎭 Puppeteer** - Browser automation
+- **📡 Axios** - HTTP client for downloads
+- **🎨 Chalk** - Terminal styling
+- **❓ Inquirer** - Interactive CLI prompts
+- **📊 CLI Progress** - Progress bars
+
+### Development Dependencies
+
+- **🧹 ESLint** - Code linting and style enforcement
 
 ## 🐛 Troubleshooting
 
 ### Common Issues
 
-1. **Login Failed**
+**❌ Login Failed**
 
-   - Verify your credentials in `config.json`
-   - Check if WSEI platform is accessible
-   - Ensure your account is active
+- Verify credentials in `config.json`
+- Check WSEI platform availability
+- Ensure 2FA is not enabled (not supported)
 
-2. **No Courses Found**
+**❌ Download Failures**
 
-   - Verify you're enrolled in courses
-   - Check the courses URL in configuration
-   - Ensure you're logged in successfully
+- Check internet connection stability
+- Increase timeout values in configuration
+- Review error logs for specific issues
 
-3. **Download Failures**
+**❌ Browser Issues**
 
-   - Check internet connection
-   - Verify file permissions in download directory
-   - Check available disk space
+- Try running with `headless: false` for debugging
+- Update Chrome/Chromium browser
+- Check browser arguments compatibility
 
-4. **Browser Issues**
-   - Update Node.js and npm
-   - Clear browser cache
-   - Try running in non-headless mode
+### Getting Help
 
-### Debug Mode
-
-Run in debug mode for detailed logging:
-
-```bash
-npm run dev
-```
-
-### Logs
-
-Check the `logs/` directory for detailed application logs.
-
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
-
-### Development Guidelines
-
-- Follow the existing code style
-- Add JSDoc comments for all functions
-- Update documentation for new features
-- Ensure all tests pass
-- Follow semantic versioning
+- 📖 Check the [Wiki](https://github.com/yourusername/wsei-course-downloader/wiki)
+- 🐛 Report bugs in [Issues](https://github.com/yourusername/wsei-course-downloader/issues)
+- 💬 Join discussions in [Discussions](https://github.com/yourusername/wsei-course-downloader/discussions)
 
 ## 📄 License
 
@@ -264,36 +232,20 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 🙏 Acknowledgments
 
-- WSEI for providing the e-learning platform
-- Puppeteer team for the excellent browser automation library
-- All contributors who helped improve this tool
+- 🎓 WSEI University for providing the e-learning platform
+- 🌟 The open-source community for the amazing tools and libraries
+- 👥 All contributors who help improve this project
 
-## 📞 Support
+## ⭐ Star History
 
-If you encounter any issues or have questions:
-
-1. Check the [troubleshooting section](#troubleshooting)
-2. Search existing [issues](https://github.com/yourusername/wsei-course-downloader/issues)
-3. Create a new issue with detailed information
-
-## 🔄 Changelog
-
-### Version 2.0.0
-
-- **Major refactoring** to modular architecture
-- **Fixed file skipping logic** with proper validation
-- **Added comprehensive error handling**
-- **Improved logging and debugging**
-- **Enhanced code quality** with ESLint
-- **Production-ready** configuration and scripts
-- **Better documentation** and examples
-
-### Version 1.0.0
-
-- Initial release with basic functionality
-- Course discovery and download
-- Simple CLI interface
+If this project helped you, please consider giving it a star! ⭐
 
 ---
 
-**Note**: This tool is for educational purposes only. Please respect WSEI's terms of service and use responsibly.
+<div align="center">
+
+**Made with ❤️ by the WSEI Downloader Team**
+
+[⬆ Back to Top](#-wsei-course-downloader)
+
+</div>
