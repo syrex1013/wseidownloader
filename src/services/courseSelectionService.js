@@ -1,5 +1,5 @@
-const inquirer = require("inquirer");
-const chalk = require("chalk");
+const inquirer = require('inquirer');
+const chalk = require('chalk');
 
 /**
  * Handles course selection by the user
@@ -8,12 +8,12 @@ const chalk = require("chalk");
  */
 async function selectCourses(courses) {
   if (!courses || courses.length === 0) {
-    console.log(chalk.red("❌ No courses available for selection"));
+    console.log(chalk.red('❌ No courses available for selection'));
     return [];
   }
 
-  console.log(chalk.cyan("\n📚 Available Courses:"));
-  console.log(chalk.gray("─".repeat(80)));
+  console.log(chalk.cyan('\n📚 Available Courses:'));
+  console.log(chalk.gray('─'.repeat(80)));
 
   courses.forEach((course, index) => {
     const courseNumber = chalk.cyan(`[${index + 1}]`);
@@ -24,13 +24,13 @@ async function selectCourses(courses) {
     console.log(`${courseNumber} ${courseName} ${category} - ${progress}`);
   });
 
-  console.log(chalk.gray("─".repeat(80)));
+  console.log(chalk.gray('─'.repeat(80)));
 
   const questions = [
     {
-      type: "confirm",
-      name: "downloadAll",
-      message: chalk.blue("Do you want to download all courses?"),
+      type: 'confirm',
+      name: 'downloadAll',
+      message: chalk.blue('Do you want to download all courses?'),
       default: true,
     },
   ];
@@ -44,17 +44,17 @@ async function selectCourses(courses) {
 
   // Manual course selection
   const courseSelectionQuestion = {
-    type: "input",
-    name: "selectedCourseNumbers",
+    type: 'input',
+    name: 'selectedCourseNumbers',
     message: chalk.blue(
-      "Enter course numbers separated by commas (e.g., 1,3,5):"
+      'Enter course numbers separated by commas (e.g., 1,3,5):',
     ),
     validate: (input) => {
       if (!input.trim()) {
-        return "Please enter at least one course number";
+        return 'Please enter at least one course number';
       }
 
-      const numbers = input.split(",").map((n) => n.trim());
+      const numbers = input.split(',').map((n) => n.trim());
       for (const num of numbers) {
         const courseIndex = parseInt(num) - 1;
         if (
@@ -74,7 +74,7 @@ async function selectCourses(courses) {
   ]);
 
   const selectedIndices = selectedCourseNumbers
-    .split(",")
+    .split(',')
     .map((n) => parseInt(n.trim()) - 1);
 
   const selectedCourses = selectedIndices.map((index) => courses[index]);
@@ -107,7 +107,7 @@ function validateCourseSelection(selectedCourses, availableCourses) {
     const exists = availableCourses.some(
       (available) =>
         available.name === selectedCourse.name &&
-        available.url === selectedCourse.url
+        available.url === selectedCourse.url,
     );
 
     if (!exists) {
@@ -124,8 +124,8 @@ function validateCourseSelection(selectedCourses, availableCourses) {
  * @returns {void}
  */
 function displayCourseSelectionSummary(selectedCourses) {
-  console.log(chalk.cyan("\n📋 Course Selection Summary:"));
-  console.log(chalk.gray("─".repeat(60)));
+  console.log(chalk.cyan('\n📋 Course Selection Summary:'));
+  console.log(chalk.gray('─'.repeat(60)));
 
   selectedCourses.forEach((course, index) => {
     const courseNumber = chalk.cyan(`[${index + 1}]`);
@@ -135,7 +135,7 @@ function displayCourseSelectionSummary(selectedCourses) {
     console.log(`${courseNumber} ${courseName} ${category}`);
   });
 
-  console.log(chalk.gray("─".repeat(60)));
+  console.log(chalk.gray('─'.repeat(60)));
   console.log(chalk.green(`Total courses selected: ${selectedCourses.length}`));
 }
 
