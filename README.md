@@ -165,18 +165,20 @@ The downloader provides real-time updates on:
 
 ## 🔧 Scripts
 
-| Command                 | Description                       |
-| ----------------------- | --------------------------------- |
-| `npm start`             | 🚀 Start the downloader           |
-| `npm run dev`           | 🔍 Start with debugging enabled   |
-| `npm run lint`          | 🧹 Check code style               |
-| `npm run lint:fix`      | ✨ Fix code style issues          |
-| `npm test`              | 🧪 Run unit tests                 |
-| `npm run test:watch`    | 👀 Run tests in watch mode        |
-| `npm run test:coverage` | 📊 Run tests with coverage report |
-| `npm run build:exe`     | 📦 Build standalone executables   |
-| `npm run clean`         | 🗑️ Clean downloads and logs       |
-| `npm run setup`         | ⚙️ Create example configuration   |
+| Command                  | Description                       |
+| ------------------------ | --------------------------------- |
+| `npm start`              | 🚀 Start the downloader           |
+| `npm run dev`            | 🔍 Start with debugging enabled   |
+| `npm run lint`           | 🧹 Check code style               |
+| `npm run lint:fix`       | ✨ Fix code style issues          |
+| `npm test`               | 🧪 Run unit tests                 |
+| `npm run test:watch`     | 👀 Run tests in watch mode        |
+| `npm run test:coverage`  | 📊 Run tests with coverage report |
+| `npm run build:exe`      | 📦 Build standalone executables   |
+| `npm run install:chrome` | 🌐 Install Chrome for Puppeteer   |
+| `npm run test:exe`       | 🧪 Test executable build process  |
+| `npm run clean`          | 🗑️ Clean downloads and logs       |
+| `npm run setup`          | ⚙️ Create example configuration   |
 
 ## 🧪 Testing
 
@@ -226,23 +228,20 @@ npm run build:exe
 # - wsei-course-downloader-win-x64.exe
 ```
 
-### Alpine Linux / musl libc Support
+### Prerequisites for Executables
 
-The standard Linux build uses glibc and may not work on Alpine Linux or other musl-based systems. To build for Alpine:
+Before running any executable, ensure you have:
+
+1. **Node.js installed** on your system
+2. **Puppeteer Chrome browser** installed
 
 ```bash
-# Build Alpine-compatible executable
-./build-alpine-executable.sh
-
-# Or build manually with Docker
-docker build -f Dockerfile.build-alpine -t wsei-alpine .
+# Install Chrome for Puppeteer
+npm install -g puppeteer
+npx puppeteer browsers install chrome
 ```
 
-This creates `wsei-course-downloader-alpine-x64` which works on:
-
-- Alpine Linux
-- Docker containers using Alpine base images
-- Other musl libc-based systems
+The executables are standalone but still require Chrome to be available through Puppeteer.
 
 ### Supported Platforms
 
@@ -351,15 +350,20 @@ We welcome contributions! 🎉
 - Try running with `headless: false` for debugging
 - Check browser arguments compatibility
 
-**❌ Linux Executable Errors**
+**❌ Node.js or Puppeteer Missing**
 
-- **"unsupported relocation type"** - You're running a glibc build on musl system (Alpine)
-  - Use `./build-alpine-executable.sh` to create Alpine-compatible build
-  - Or use the standard build on Ubuntu/Debian-based systems
-- **Missing libraries** - Install required dependencies:
+- **"Node.js not found"** - Install Node.js from [nodejs.org](https://nodejs.org/)
+- **Missing libraries** - Install required system dependencies:
+
   ```bash
   # Ubuntu/Debian
   sudo apt-get install libglib2.0-0 libnss3 libatk1.0-0
+
+  # macOS
+  # Usually works out of the box after Node.js installation
+
+  # Windows
+  # Usually works out of the box after Node.js installation
   ```
 
 **❌ Chrome Not Found**
