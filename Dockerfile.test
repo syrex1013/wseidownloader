@@ -1,0 +1,27 @@
+# Test the Linux executable in a minimal environment
+FROM alpine:latest
+
+# Create app directory
+WORKDIR /app
+
+# Copy the Linux executable
+COPY dist/wsei-course-downloader-linux-x64 .
+
+# Make it executable
+RUN chmod +x wsei-course-downloader-linux-x64
+
+# Create a minimal config.json for testing
+RUN echo '{ \
+  "credentials": { \
+    "username": "test@example.com", \
+    "password": "testpass" \
+  }, \
+  "urls": { \
+    "loginUrl": "https://wsei.pl/login/index.php", \
+    "coursesUrl": "https://wsei.pl/my/" \
+  }, \
+  "downloadDir": "downloads" \
+}' > config.json
+
+# Run the executable
+CMD ["./wsei-course-downloader-linux-x64"] 

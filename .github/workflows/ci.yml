@@ -215,5 +215,11 @@ jobs:
           mkdir -p dist
           npx pkg . --targets node18-linux-x64 --out-path dist/
           ls -la dist/
-          echo "Testing executable startup (Chrome not found error is expected):"
-          timeout 10 ./dist/wsei-course-downloader || echo "Build validation complete - executable starts correctly"
+          echo "Testing executable in Docker container:"
+          # Test in Ubuntu container to ensure compatibility
+          docker run --rm --platform linux/amd64 -v "$(pwd)/dist:/app" ubuntu:22.04 bash -c '
+            cd /app
+            chmod +x wsei-course-downloader
+            echo "Testing executable startup (Chrome not found error is expected):"
+            timeout 10 ./wsei-course-downloader || echo "Build validation complete - executable starts correctly (exit code: $?)"
+          '

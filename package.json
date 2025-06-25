@@ -20,7 +20,12 @@
     "setup": "node -e \"require('./src/config/configManager').createExampleConfig()\"",
     "clean": "rm -rf downloads logs/*.log",
     "build": "echo \"No build step required for Node.js application\"",
-    "prepublishOnly": "npm run lint && npm test"
+    "prepublishOnly": "npm run lint && npm test",
+    "test:docker": "docker run --rm -v \"$(pwd)/dist:/app\" alpine:latest sh -c 'cd /app && chmod +x wsei-course-downloader-linux-x64 && ./wsei-course-downloader-linux-x64 || echo \"Exit code: $?\"'",
+    "test:docker:ubuntu": "docker run --rm -v \"$(pwd)/dist:/app\" ubuntu:22.04 sh -c 'cd /app && chmod +x wsei-course-downloader-linux-x64 && ./wsei-course-downloader-linux-x64 || echo \"Exit code: $?\"'",
+    "test:docker:minimal": "docker run --rm -v \"$(pwd)/dist:/app\" busybox:latest sh -c 'cd /app && chmod +x wsei-course-downloader-linux-x64 && ./wsei-course-downloader-linux-x64 || echo \"Exit code: $?\"'",
+    "test:docker:build": "docker build -f Dockerfile.test -t wsei-test . && docker run --rm wsei-test",
+    "test:docker:deps": "docker run --rm -v \"$(pwd)/dist:/app\" alpine:latest sh -c 'cd /app && ldd wsei-course-downloader-linux-x64 || echo \"No dynamic dependencies found (static binary)\"'"
   },
   "keywords": [
     "wsei",

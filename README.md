@@ -43,9 +43,31 @@
 - 📦 **Node.js** 14.0.0 or higher
 - 🔐 Valid WSEI e-learning platform credentials
 - 🌐 Stable internet connection
-- 💿 **Chrome browser automatically installed** on first run
+- 💿 **Puppeteer** (for Chrome automation)
 
 ### Installation
+
+#### 1. Install Node.js
+
+Download and install Node.js from [nodejs.org](https://nodejs.org/)
+
+#### 2. Install Puppeteer
+
+You must install Puppeteer globally to ensure Chrome can be downloaded and managed:
+
+```bash
+npm install -g puppeteer
+```
+
+#### 3. Download Chrome for Puppeteer
+
+Puppeteer will automatically download a compatible version of Chrome on first run. If you want to pre-install it:
+
+```bash
+npx puppeteer browsers install chrome
+```
+
+#### 4. Clone and Setup the Project
 
 ```bash
 # Clone the repository
@@ -204,6 +226,24 @@ npm run build:exe
 # - wsei-course-downloader-win-x64.exe
 ```
 
+### Alpine Linux / musl libc Support
+
+The standard Linux build uses glibc and may not work on Alpine Linux or other musl-based systems. To build for Alpine:
+
+```bash
+# Build Alpine-compatible executable
+./build-alpine-executable.sh
+
+# Or build manually with Docker
+docker build -f Dockerfile.build-alpine -t wsei-alpine .
+```
+
+This creates `wsei-course-downloader-alpine-x64` which works on:
+
+- Alpine Linux
+- Docker containers using Alpine base images
+- Other musl libc-based systems
+
 ### Supported Platforms
 
 | Platform | Architecture  | Executable Name                      |
@@ -310,6 +350,29 @@ We welcome contributions! 🎉
 - No manual Chrome installation required
 - Try running with `headless: false` for debugging
 - Check browser arguments compatibility
+
+**❌ Linux Executable Errors**
+
+- **"unsupported relocation type"** - You're running a glibc build on musl system (Alpine)
+  - Use `./build-alpine-executable.sh` to create Alpine-compatible build
+  - Or use the standard build on Ubuntu/Debian-based systems
+- **Missing libraries** - Install required dependencies:
+  ```bash
+  # Ubuntu/Debian
+  sudo apt-get install libglib2.0-0 libnss3 libatk1.0-0
+  ```
+
+**❌ Chrome Not Found**
+
+- Make sure you have run:
+  ```bash
+  npx puppeteer browsers install chrome
+  ```
+- Ensure Puppeteer is installed globally:
+  ```bash
+  npm install -g puppeteer
+  ```
+- If running in a CI or server environment, make sure the user has write permissions to the Puppeteer cache directory (usually `~/.cache/puppeteer`)
 
 ### Getting Help
 
